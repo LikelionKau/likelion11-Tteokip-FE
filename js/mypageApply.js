@@ -240,7 +240,7 @@ const totalvar = async () => {
 
 
         nextButton.addEventListener('click', () => {
-            if (appliedPage < getTotalPageCount()) {
+            if (appliedPage < Math.ceil(arrayLength / count_per_page)) {
                 appliedPage += 1;
                 setPageOf(appliedPage);
                 moveSelectedPageHighlight();
