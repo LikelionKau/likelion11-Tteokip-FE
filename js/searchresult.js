@@ -82,11 +82,13 @@ const getdetailinfo = () => {
             }
         }
 
+
+
         let realDday = 5 - (today_date - update_date);
 
         if(realDday == 0){
             dDay.innerText = "[D-day]";
-        }else if(realDday<0){
+        }else if(realDday<0 || realDday >5 ||today_year > update_year || today_month > update_month){
             dDay.innerText = "[마감]";
             document.querySelector('.sideBtnWrap').style.display="none";
         }else{

@@ -14,7 +14,7 @@ function login() {
     const loginPw = document.getElementById('loginPw').value;
     const loginMail = document.getElementById('loginMail').value;
 
-    globalAxiosInstance.post(baseUrl + "/api/user/form_login", {
+    axios.post(baseUrl + "/api/user/form_login", {
         "userEmail" : loginMail,
         "password": loginPw
     }).then(function (response) {
@@ -23,8 +23,11 @@ function login() {
 
             localStorage.setItem('login-token', response.data.accessToken);
             localStorage.setItem('user-id', response.data.userId);
+            const expiresAt = new Date().getTime() + 3600000; // 1시간 = 3600000밀리초
+            localStorage.setItem('expires_at', expiresAt);
             alert('로그인이 완료되었습니다.');
             window.location.href = "../html/main.html";
+
         }
 
 
@@ -39,3 +42,4 @@ function login() {
 
     })
 }
+

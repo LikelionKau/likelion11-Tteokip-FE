@@ -45,8 +45,14 @@ function moveResult() {
     location.href = "../html/resultPopup.html";
 }
 const getuserinfo = () => {
+    let token =  localStorage.getItem('login-token')
+    let config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
     let id = localStorage.getItem('user-id')
-    axios.get(baseUrl + `/api/user/${id}`
+    axios.get(baseUrl + `/api/user/${id}`,config
     ).then(response =>{
         //console.log(response.data);
         let username = document.getElementById('nameid');
@@ -65,3 +71,13 @@ const getuserinfo = () => {
 window.addEventListener('DOMContentLoaded', () => {
     getuserinfo();
 });
+
+
+const logOut = document.getElementById('out');
+
+logOut.addEventListener('click', function(){
+    localStorage.removeItem('login-token');
+    localStorage.removeItem('user-id');
+    window.location.href= '../html/login.html';
+
+})

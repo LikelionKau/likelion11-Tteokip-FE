@@ -25,6 +25,7 @@ function moveMypage() {
     location.href = "../html/mypage.html";
 }
 
+
 const setupCarousel = (wrapperClass, carouselClass) => {
     const wrapper = document.querySelector(`.${wrapperClass}`);
     const carousel = document.querySelector(`.${carouselClass}`);
@@ -105,10 +106,6 @@ const setupCarousel = (wrapperClass, carouselClass) => {
     autoPlay();
 }
 
-setupCarousel('wrapper1', 'carousel1');
-setupCarousel('wrapper2', 'carousel2');
-
-
 
 const navLogin = document.getElementById('login');
 
@@ -116,6 +113,7 @@ navLogin.addEventListener('click', function(){
     if(navLogin.innerText == '로그아웃'){
         localStorage.removeItem('login-token');
         localStorage.removeItem('user-id');
+        localStorage.removeItem('expires_at');
         window.location.href= '../html/login.html'
         navLogin.innerText == '로그인'
     }
@@ -125,14 +123,15 @@ navLogin.addEventListener('click', function(){
 
 })
 
+
 function updateCarousel(carouselSelector, data) {
     const cards = document.querySelectorAll(`${carouselSelector} .card`);
     const cardsArray = Array.from(cards);
 
-    cardsArray.forEach((card, index) => {
-        console.log(data[index]);
+    for (let index = 0; index < 10; index++) {
         if (data[index]) {
             const item = data[index];
+            const card = cardsArray[index];
             card.querySelector('h3').textContent = item.itemName;
             card.querySelector('.card-title span').textContent = item.artist;
             let dDay = dday(item.uploadTime);
@@ -141,15 +140,15 @@ function updateCarousel(carouselSelector, data) {
             card.querySelector('.little-title2').innerHTML = `<img src="../img/calendar.png" alt="">${item.dateTime}`;
             card.querySelector('.img img').src = item.post;
         }
-    });
+    }
 }
 
 
 const likeChart = () => {
     axios.get(baseUrl + '/api/items/tops')
         .then(response => {
-            console.log(response.data.content)
             updateCarousel('.carousel2', response.data.content);
+            setupCarousel('wrapper2', 'carousel2');
         })
         .catch(error => console.error(error));
 }
@@ -157,21 +156,42 @@ const likeChart = () => {
 const newChart = () => {
     axios.get(baseUrl + '/api/items/uploads')
         .then(response => {
-            console.log(response.data.content)
             updateCarousel('.carousel1', response.data.content);
+            setupCarousel('wrapper1', 'carousel1');
         })
         .catch(error => console.error(error));
 }
+
 
 window.addEventListener('load', function() {
     newChart();
     likeChart();
 
-    if(localStorage.getItem('login-token')){
+    if(localStorage.getItem('login-token')) {
         navLogin.innerText = '로그아웃'
     }
+    const menuLink1 = document.querySelector('#nav1');
+    const menuLink2 = document.querySelector('#nav2');
+
+    menuLink1.addEventListener('click', function(event) {
+        if (login.textContent === '로그인') {
+            event.preventDefault();
+            alert('회원이 아닙니다. 로그인을 해주세요.');
+            window.location.href ='../html/login.html'
+        }
+    });
+    menuLink2.addEventListener('click', function(event) {
+        if (login.textContent === '로그인') {
+            event.preventDefault();
+            alert('회원이 아닙니다. 로그인을 해주세요.');
+            window.location.href ='../html/login.html'
+        }
+    });
+
+
 
 })
+
 
 const dday = (Time) => {
     let now = new Date();
@@ -205,9 +225,25 @@ const dday = (Time) => {
 
     let number = 5 - (today_date - update_date);
 
-    if (number <= 0) {
+    if (number <= 0 || today_year > update_year || today_month > update_month) {
         return '마감';
-    } else return "D-" + number;
+    } else if (number <= 5){
+        return "D-" + number;
+    } else {
+        return '마감'
+    }
 }
 
+function checkTokenValidity() {
+    const now = new Date().getTime();
+    const expiresAt = localStorage.getItem('expires_at');
+
+    if (now > expiresAt) {
+        // 토큰 만료
+        localStorage.removeItem('login-token');
+        localStorage.removeItem('user-id');
+        localStorage.removeItem('expires_at');
+        alert('로그인 세션이 만료되었습니다. 다시 로그인 해주세요.');
+    }
+}
 

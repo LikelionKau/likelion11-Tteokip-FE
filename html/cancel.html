@@ -162,22 +162,7 @@
 </div>
 
 
-<script>
 
-    var globalAxiosInstance = axios.create();
-
-    // 인터셉터 설정
-    globalAxiosInstance.interceptors.request.use(function (config) {
-        const token = localStorage.getItem('login-token');
-        const publicPaths = ['/api/items/all', '/api/signup', '/api/form_login'];
-
-        if (!publicPaths.includes(config.url) && token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-
-        return config;
-    });
-</script>
 <script src="../js/cancel.js"></script>
 
 </body>

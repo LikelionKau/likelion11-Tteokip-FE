@@ -181,3 +181,13 @@ const goPay = () => {
 
     window.location.href = url;
 }
+
+
+const logOut = document.getElementById('out');
+
+logOut.addEventListener('click', function(){
+    localStorage.removeItem('login-token');
+    localStorage.removeItem('user-id');
+    window.location.href= '../html/login.html';
+
+})

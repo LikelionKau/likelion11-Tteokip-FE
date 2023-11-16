@@ -20,10 +20,11 @@ http://ec2-3-38-100-226.ap-northeast-2.compute.amazonaws.com:8080
 
 const getData = async () => {
     try {
+        let token =  localStorage.getItem('login-token')
         const response = await axios.get(baseUrl + '/api/raffles/users', {
             params: {
                 userId: localStorage.getItem('user-id')
-            }
+            },headers: {Authorization: `Bearer ${token}`},
         });
         const responseData = response.data;
         console.log(responseData,'data')
@@ -36,8 +37,14 @@ const getData = async () => {
 
 const likeData = async () => {
     try {
+        let token =  localStorage.getItem('login-token')
+        let config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
         let id = localStorage.getItem('user-id')
-        const response = await axios.get(baseUrl + `/api/items/${id}`);
+        const response = await axios.get(baseUrl + `/api/items/${id}`, config);
 
         const responseData = response.data; // response에서 데이터 추출
         console.log(responseData)
