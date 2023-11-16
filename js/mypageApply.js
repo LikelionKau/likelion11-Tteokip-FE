@@ -25,6 +25,7 @@ const totalvar = async () => {
         const setPageButtons = () => {
             numberButWrapper.innerHTML = '';
             for (let i = 1; i <= Math.ceil(arrayLength / count_per_page); i++) {
+
                 numberButWrapper.innerHTML += `<span class="number-button"> ${i} </span>`;
             }
             numberButWrapper.firstChild.classList.add('selected');
@@ -37,13 +38,15 @@ const totalvar = async () => {
         const setPageOf = (pageNumber) => {
             const list = document.getElementById("list");
             list.innerText = '';
+
+            let idbox = document.getElementById('lastState');
+
+
             for (
                 let i = count_per_page * (pageNumber - 1) + 1;
                 i <= count_per_page * (pageNumber - 1) + 3 && i <= arrayLength;
                 i++
             ) {
-                const itemName = data[i - 1].itemName;
-
                 const parentElement = document.createElement('li');
                 // 부모 요소 선택
                 //var parentElement = document.querySelector('#orderList');
@@ -88,7 +91,7 @@ const totalvar = async () => {
                 let infoTime = document.createElement("p");
                 infoTime.className = "info_time";
                 infoTime.id = "concertinform";
-                infoTime.textContent = data[i - 1].dateTime;
+                infoTime.textContent = data[i - 1].dateTime.substring(0,10);
                 let infoBar = document.createElement("p");
                 infoBar.className = "info_bar";
                 infoBar.textContent = "|";
@@ -117,23 +120,36 @@ const totalvar = async () => {
 
                 const result = data[i - 1].raffleStatus;
 
+/*
 
                 resultBtn.addEventListener('click', () => {
-                    if(result == 'true'){
+                    if (result ==='true') {
+                        console.log(result)
                         moveResult();
-                    }else{
+                    } else {
+                        console.log(result)
                         alert('응모에 당첨되지 않았습니다.' + '\n' + '아쉽지만 다음에 진행되는 응모에 도전해주세요.' + '\n' + '\n' + '항상 Koun을 사랑해주셔서 감사합니다.');
-
+                        moveMain();
                     }
                 });
-
+*/
 
 
                 let resultBtnText = document.createTextNode('결과');
                 resultBtn.appendChild(resultBtnText);
                 resultBtn.classList.add('result_button');
-
-
+                resultBtn.addEventListener('click', function (event) {
+                    let raffleidterm = data[i - 1].id;
+                    console.log(raffleidterm)
+                    if (result === 'true') {
+                        console.log(result)
+                        window.location.href = 'resultPopup.html?raffleid=' + encodeURIComponent(raffleidterm);
+                    } else {
+                        console.log(result)
+                        alert('응모에 당첨되지 않았습니다.' + '\n' + '아쉽지만 다음에 진행되는 응모에 도전해주세요.' + '\n' + '\n' + '항상 Koun을 사랑해주셔서 감사합니다.');
+                        moveMypage();
+                    }
+                });
 
 
                 let dDay = document.createElement("p");
@@ -150,7 +166,7 @@ const totalvar = async () => {
                 let update_date = uploadTime.split('-')[2];
 
                 /*dday 계산*/
-                if(today_year < update_year) {
+                if (today_year < update_year) {
                     today_month += 12;
                     let day30 = [2, 4, 6, 9, 11];
                     let day31 = [1, 3, 5, 7, 8, 10, 12];
@@ -169,39 +185,154 @@ const totalvar = async () => {
                     }
                 }
 
+                //console.log(today_month,'today_month')
+                //console.log(update_month,'update_month')
 
                 realdday = 5 - (today_date - update_date);
-                if (realdday <= 0) {
+
+                if (today_year > update_year) {
                     currentInform.textContent = "응모종료";
                     currentItemBox.appendChild(resultBtn);
                     currentItemBox.appendChild(currentInform);
-                } else {
-                    if (realdday <= 5) {
-                        currentInform.textContent = "응모중";
-                        dDay.textContent = "[D-" + realdday+']';
-                        currentItemBox.appendChild(currentInform);
-                        currentItemBox.appendChild(dDay);
-                    } else {
-                        currentInform.textContent = '응모 시작 전';
+
+                }
+                else {
+                    if(today_month > update_month) {
+                        currentInform.textContent = "응모종료";
+                        currentItemBox.appendChild(resultBtn);
                         currentItemBox.appendChild(currentInform);
                     }
+                    else {
+                        if (realdday <= 0) {
+                            currentInform.textContent = "응모종료";
+                            currentItemBox.appendChild(resultBtn);
+                            currentItemBox.appendChild(currentInform);
+                        } else {
+                            if (realdday <= 5) {
+                                currentInform.textContent = "응모중";
+                                dDay.textContent = "[D-" + realdday + ']';
+                                currentItemBox.appendChild(currentInform);
+                                currentItemBox.appendChild(dDay);
+                            } else {
+                                console.log(realdday)
+                                console.log(today_date)
+                                console.log(update_date)
+                                currentInform.textContent = '응모 시작 전';
+                                currentItemBox.appendChild(currentInform);
+                            }
+                        }
+                    }
+
                 }
+
+
+
 
                 //current_itemBox를 itemBox에 추가
                 itemBox.appendChild(currentItemBox);
                 // cancel_itemBox 요소 생성
-                var cancelItemBox = document.createElement("div");
+                let cancelItemBox = document.createElement("div");
                 cancelItemBox.className = "cancel_itemBox";
+
                 var cancelButton = document.createElement("button");
-                cancelButton.className = "cancelBtn";
+                cancelButton.className = "cancelButtons";
+/*
+                cancelButton.id = 'cancelid';
+*/
                 cancelButton.textContent = "취소";
+                let cancelid = data[i - 1].id;
+                cancelButton.id = cancelid;
+
+/*
+                let idbox = document.getElementById('lastState');
+*/
+
+                cancelButton.addEventListener('click',(e) => {
+                    let buttonId = e.target.id;
+                    for (i = 0; i < data.length; i++) {
+                        if (data[i].id == buttonId) {
+                            let concertInfo = document.getElementById('concert_info');
+                            concertInfo.textContent = data[i].itemName;
+                            let concertDate = document.getElementById('concert_date');
+                            concertDate.textContent = data[i].applicationDate;
+                            let seatInfo = document.getElementById('seat_info');
+                            seatInfo.textContent = data[i].sectionName;
+
+
+                            showPopup();
+                            idbox.id = buttonId;
+                            console.log(idbox.id)
+
+
+                        }
+                    }
+                })
+
+
+
+
+/*
+                let Popup = document.getElementById('cancelpopup');
+                if(Popup.className == 'filter') {
+                    console.log('작동')
+                    let realId = document.querySelectorAll('#cancelpopup .canceltext');
+                    console.log(realId.id)
+                }
+
+                let Popup2 = document.getElementById('cancelpopup2');
+                if(Popup2.className == 'filter') {
+                    let cancelBtn2 = document.getElementById('cancelBtn2');
+                    cancelBtn2.addEventListener('click',CancelFunc(realId.id))
+
+                }*/
+
                 cancelItemBox.appendChild(cancelButton);
                 itemBox.appendChild(cancelItemBox);
                 //다 완성된 itemBox 요소를 ul에 추가
                 parentElement.appendChild(itemBox);
                 list.append(parentElement);
             }
-        };
+
+            let popup = document.getElementById('cancelBtn2');
+            popup.addEventListener('click',(e) => {
+                let popup2 = document.getElementById('cancelpopup2').classList;
+                if (popup2.contains('filter')) {
+                    console.log(idbox.id,1)
+                    let realId = idbox.id;
+                    idbox.addEventListener('click',()=> {
+                        CancelFunc(realId);
+                        console.log('제발 마지막이기를')
+                    });
+                } else {
+                    console.log('?!')
+                }
+            })
+
+            let popup3 = document.getElementById('done');
+            popup3.addEventListener('click',() => {
+                alert('KOUN을 이용해주셔서 감사합니다.')
+                window.location.href = "../html/main.html";
+            })
+
+            /*            function getId(event) {
+                            let buttonId = event.target.id;
+                            for (i = 0; i < data.length; i++) {
+                                if (data[i].id == buttonId) {
+                                    let concertInfo = document.getElementById('concert_info');
+                                    concertInfo.textContent = data[i].itemName;
+                                    let concertDate = document.getElementById('concert_date');
+                                    concertDate.textContent = data[i].applicationDate;
+                                    let seatInfo = document.getElementById('seat_info');
+                                    seatInfo.textContent = data[i].sectionName;
+
+                                    let laststate = document.getElementById('lastState');
+                                    laststate.id = data[i].id;
+
+                                    showPopup();
+                                }
+                            }
+                        }*/
+        }
 
         setPageButtons();
         setPageOf(appliedPage);
@@ -262,3 +393,5 @@ const totalvar = async () => {
 }
 
 totalvar();
+
+

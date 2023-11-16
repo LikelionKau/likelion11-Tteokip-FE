@@ -1,16 +1,21 @@
-const baseUrl = "http://ec2-3-34-90-9.ap-northeast-2.compute.amazonaws.com:8080";
+
+const baseUrl = "http://13.124.88.252:8080";
 
 
 function moveMypage() {
-    location.href = "../html/mypage.html";
+    location.href = "../html/main.html";
+}
+function getResultTermFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('raffleid');
 }
 
 
 const getResult = async () => {
     try {
-        const response = await axios.get(baseUrl + `/api/raffles/result`, {
+        const response = await axios.get(baseUrl + '/api/raffles/result', {
             params: {
-                raffleId: 1
+                raffleId: getResultTermFromURL()
             }
         });
 
@@ -43,8 +48,10 @@ const result = async () => {
         const seatinfo = document.getElementById('seat');
         seatinfo.innerText = data.sectionName;
 
+/*
         const rateinfo = document.getElementById('rate');
         rateinfo.innerText = data.sectionRate;
+*/
 
     } catch (error) {
         console.log(error);

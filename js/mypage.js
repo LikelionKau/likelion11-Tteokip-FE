@@ -8,6 +8,8 @@ let mailinfo = document.getElementById('mailinfo')
 name.innerText = iddata;
 nameinfo.innerText = iddata;
 mailinfo.innerText = maildata;
+
+
 /*공연정보 페이지네이션*/
 
 /**
@@ -40,5 +42,26 @@ function moveMypage() {
 }
 
 function moveResult() {
-    location.href = "../html/resultPopup.html"
+    location.href = "../html/resultPopup.html";
 }
+const getuserinfo = () => {
+    let id = localStorage.getItem('user-id')
+    axios.get(baseUrl + `/api/user/${id}`
+    ).then(response =>{
+        //console.log(response.data);
+        let username = document.getElementById('nameid');
+        username.innerText = response.data.name;
+
+        let username2 = document.getElementById('nameinfo');
+        username2.innerText = response.data.name;
+
+        let mailinfo = document.getElementById('mailinfo');
+        mailinfo.innerText = response.data.email;
+
+    }).catch(function (error) {
+        console.log(error);
+    })
+}
+window.addEventListener('DOMContentLoaded', () => {
+    getuserinfo();
+});

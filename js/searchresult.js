@@ -15,54 +15,82 @@ let dDay = document.querySelector('.d-day');
 let infotext2 = document.getElementById('veiwing_time');
 let infotext3 = document.getElementById('concertPerformer');
 let posterimg = document.querySelector('.posterBoxImage');
-
-
-
+const likeIdBox = document.querySelector('.posterBox');
 
 let detaildata;
 
 
-const baseUrl = "http://ec2-3-34-90-9.ap-northeast-2.compute.amazonaws.com:8080";
+const baseUrl = "http://13.124.88.252:8080";
 
 //콘서트 제목으로 모든 아이템 가져오기
 const getdetailinfo = () => {
     axios.get(baseUrl + '/api/items/search',{
         params: {
-            itemName: getSearchTermFromURL()
+            itemName: getSearchTermFromURL(),
+            userId: localStorage.getItem('user-id')
         }
     }).then(response =>{
         detaildata = response.data;
-
+        console.log(detaildata)
         placeinfo.innerText = detaildata.venue;
         dateinfo.innerText = detaildata.dateTime;
         infotext2.innerText = detaildata.runningTime;
         infotext3.innerText = detaildata.artist;
         infotext1.innerText = detaildata.ageRequirement;
         posterimg.src=detaildata.post;
+        //이미 좋아요를 한 상태라면
+        if(detaildata.userLike){
+            fill.style.display = "flex";
+            empty.style.display = "none";
+        }else{ // 좋아요를 하지 않은 상태라면
+            fill.style.display = "none";
+            empty.style.display = "flex";
+        }
 
-        let updatedate = detaildata.uploadTime;
         let itemid = detaildata.id;
+        posterimg.id = detaildata.id;
+        likeIdBox.id = detaildata.likeId;
 
         afterDetailDataLoaded();
 
-        const date1String = '2023-08-19';
-        const date2String = updatedate;
+        let now = new Date();
+        let today_year = now.getFullYear();
+        let today_month = now.getMonth() + 1;
+        let today_date = now.getDate();
 
-        const date1 = new Date(date1String);
-        const date2 = new Date(date2String);
+        let uploadTime = detaildata.uploadTime;
+        let update_year = uploadTime.split('-')[0];
+        let update_month = uploadTime.split('-')[1];
+        let update_date = uploadTime.split('-')[2];
 
-        const timeDifference = date1 - date2;
-        const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
+        if (today_year < update_year) {
+            today_month += 12;
+            let day30 = [2, 4, 6, 9, 11];
+            let day31 = [1, 3, 5, 7, 8, 10, 12];
+            if ((today_month < update_month) && (day30.includes(update_month))) {
+                if (today_month != 2) {
+                    today_date += 30;
+                } else {
+                    if ((today_year % 4 == 0 && today_year % 100 != 0) || today_year % 400 == 0) {
+                        today_date += 29;
+                    } else {
+                        today_date += 28;
+                    }
+                }
+            } else if (today_month < update_month && day31.includes(update_month)) {
+                today_date += 31;
+            }
+        }
 
-        realdday = 5 - (daysDifference);
+        let realDday = 5 - (today_date - update_date);
 
-        if(realdday == 0){
+        if(realDday == 0){
             dDay.innerText = "[D-day]";
-        }else if(realdday<0){
+        }else if(realDday<0){
             dDay.innerText = "[마감]";
             document.querySelector('.sideBtnWrap').style.display="none";
         }else{
-            dDay.innerText = "[D-"+ realdday+"]";
+            dDay.innerText = "[D-"+ realDday +"]";
         }
 
 
@@ -81,6 +109,7 @@ const getseatinfo = (id) => {
         }
     }).then(response =>{
         let seatdata = response.data;
+        console.log(seatdata)
 
 
         for (let i = 0; i <= 6; i++) {
@@ -88,7 +117,7 @@ const getseatinfo = (id) => {
             seat.innerText = seatdata[i].sectionName;
 
             let price = document.getElementById(`Price${i}`);
-            price.innerText = seatdata[i].price+ '원';
+            price.innerText = seatdata[i].price.toLocaleString()+ ' 원';
         }
 
 

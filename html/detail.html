@@ -18,7 +18,6 @@
         <li class="navbar__menu__item">로그아웃</li>
         <li class="navbar__menu__item" onclick="moveMypage()">결과확인</li>
         <li class="navbar__menu__item" onclick="moveMypage()">마이페이지</li>
-        <li class="navbar__menu__item">고객센터</li>
     </ul>
 </nav>
 <div id="header" class="header">
@@ -50,10 +49,10 @@
             <div class="productMainTop">
                 <div class="posterBox">
                     <img class="posterBoxImage" src="../img/Poster_Lauv.png" alt="라우브 내한공연 (Lauv in Seoul)">
-<!--                    <div id="likeBtn" class="circle-button">
-                        <i id="emptyHeart" class="fa-regular fa-heart fa-lg" style="color: #ffffff; display: flex;"></i>
-                        <i id="fillHeart" class="fa-solid fa-heart fa-lg" style="color: #ffffff; display: none;"></i>
-                    </div>-->
+                        <div id="likeBtn" class="circle-button">
+                            <i id="emptyHeart" class="fa-regular fa-heart fa-lg" style="color: #ffffff; display: flex;"></i>
+                            <i id="fillHeart" class="fa-solid fa-heart fa-lg" style="color: #ffffff; display: none;"></i>
+                        </div>
                 </div>
                 <div class="information">
                     <ul class="info">
@@ -155,7 +154,7 @@
                                 <a class="timeInfoBtn" href="#"></a>
                             </div>
                             <div class="timeTableLabel_toggled">
-                                <button class="timeTableBtn">1회 17:00</button>
+                                <button class="timeTableBtn" id="timeTableBtn">1회 17:00</button>
                             </div>
                         </div>
                     </div>
@@ -167,7 +166,22 @@
         </div>
     </div>
 </div>
+<script>
 
+    var globalAxiosInstance = axios.create();
+
+    // 인터셉터 설정
+    globalAxiosInstance.interceptors.request.use(function (config) {
+        const token = localStorage.getItem('login-token');
+        const publicPaths = ['/api/items/all', '/api/signup', '/api/form_login'];
+
+        if (!publicPaths.includes(config.url) && token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+
+        return config;
+    });
+</script>
 
 <script src="../js/searchresult.js"></script>
 <script src="../js/detail.js"></script>

@@ -3,11 +3,29 @@
 
 
 const goraffle = document.getElementById('goRaffle');
+const timetable = document.getElementById('timeTableBtn');
 
-goraffle.addEventListener("click", function (event){
-    applybtn = searchResult.innerText;
-    window.location.href = 'raffle.html?raffle=' + encodeURIComponent(applybtn);
+timetable.addEventListener("click",function(){
+    timetable.style.backgroundColor = '#26DDB1';
+    timetable.style.color = '#FFFFFF';
+    goraffle.style.backgroundColor = '#26DDB1';
+    goraffle.id = 'goraffle';
+/*    else if(timetable.style.backgroundColor == '#FFFFFF') {
+        goraffle.style.backgroundColor = '#8C9091';
+    }*/
 })
+
+goraffle.addEventListener("click", function (){
+    if(goraffle.id == 'goraffle') {
+        let applybtn = searchResult.innerText;
+        window.location.href = 'raffle.html?raffle=' + encodeURIComponent(applybtn);
+    }
+    else {
+        alert('회차를 선택해주세요.')
+    }
+})
+
+
 
 function moveMypage() {
     location.href = "../html/mypage.html";
@@ -119,24 +137,57 @@ function buildCalendar(today,date){
     }
 }
 
-/*
 
 
-/!*찜버튼-메인css에서 가져옴*!/
+/*찜버튼-메인css에서 가져옴*/
 
 
 const likeBtn = document.getElementById('likeBtn');
 const empty = document.getElementById('emptyHeart');
 const fill = document.getElementById('fillHeart');
 
+
+
 likeBtn.addEventListener("click", function(){
+    //좋아요 삭제할때
     if(fill.style.display == "flex"){
         fill.style.display = "none";
         empty.style.display = "flex";
-    }else{
+        deleteLike(likeIdBox.id);
+        console.log('좋아요삭제')
+
+
+    }else{ //좋아요 생성할때
         fill.style.display = "flex";
         empty.style.display = "none";
+        console.log('받아온 itemid: ',posterimg.id)
+        makeLike(posterimg.id);
+
     }
 
 })
-*/
+
+const makeLike = (id) => {
+    axios.post(baseUrl + "/api/likes/create", {
+        "userId": localStorage.getItem('user-id'),
+        "itemId": id,
+    }).then(function (response) {
+        console.log('좋아요 생성');
+        console.log(response.data)
+        likeIdBox.id = response.data.likeId;
+    }).catch(function (error) {
+        console.log("error")
+    })
+}
+
+const deleteLike = (id) => {
+    axios.delete(baseUrl + "/api/likes/delete", {
+        params: {
+            "likeId": id
+        }
+    }).then(function (response) {
+        console.log('좋아요 삭제');
+    }).catch(function (error) {
+        console.log("error")
+    })
+}

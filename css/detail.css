@@ -135,6 +135,7 @@
 .productWrapper {
     display: flex;
     justify-content: space-between;
+    padding-top: 15px;
     flex-wrap: wrap;
     align-items: flex-start;
     border-top: 2px solid var(--color-main-black);
@@ -153,13 +154,13 @@
 .posterBoxImage {
     display: inline-block;
     width: 300px;
-    margin-top: 8%;
+    margin-bottom: 8%;
 }
 
 .circle-button {
     position: absolute;
-    top: 30px;
-    right: 30px;
+    top: 20px;
+    right: 20px;
     width: 40px;
     height: 40px;
     background-color: #c9c9c9;
@@ -385,7 +386,7 @@ td {
 
 .reserve_btn {
 
-    background-color: var(--color-main-green);
+    background-color: var(--color-main-gray);
     color: var(--color-main-white);
     border:none;
     border-radius:5px;
