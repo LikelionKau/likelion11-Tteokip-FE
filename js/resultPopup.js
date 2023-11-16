@@ -13,10 +13,11 @@ function getResultTermFromURL() {
 
 const getResult = async () => {
     try {
+        let token =  localStorage.getItem('login-token')
         const response = await axios.get(baseUrl + '/api/raffles/result', {
             params: {
                 raffleId: getResultTermFromURL()
-            }
+            },headers: {Authorization: `Bearer ${token}`},
         });
 
         const responseData = response.data;

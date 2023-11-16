@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../css/mypage.css">
     <link rel="stylesheet" href="../css/cancel.css">
     <link rel="stylesheet" type="text/css" href='https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css'>
-    <script src="../js/mypagedata.js"></script>
+
 </head>
 <body>
 <nav class="navbar">
@@ -15,7 +15,7 @@
         <img src="../img/logo.png" alt="logo" class="logoImg" onclick="moveMain()">
     </div>
     <ul class="navbar__menu">
-        <li class="navbar__menu__item">로그아웃</li>
+        <li class="navbar__menu__item" id="out">로그아웃</li>
         <li class="navbar__menu__item" onclick="moveMypage()">결과확인</li>
         <li class="navbar__menu__item" onclick="moveMypage()">마이페이지</li>
     </ul>
@@ -256,23 +256,8 @@ popup
         </div>
     </div>
 </div>
-<script>
 
-    var globalAxiosInstance = axios.create();
-
-    // 인터셉터 설정
-    globalAxiosInstance.interceptors.request.use(function (config) {
-        const token = localStorage.getItem('login-token');
-        const publicPaths = ['/api/items/all', '/api/signup', '/api/form_login'];;
-
-        if (!publicPaths.includes(config.url) && token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-
-        return config;
-    });
-</script>
-
+<script src="../js/mypagedata.js"></script>
 <script src="../js/mypage.js"></script>
 <script src="../js/mypageApply.js"></script>
 <script src="../js/mypageLike.js"></script>

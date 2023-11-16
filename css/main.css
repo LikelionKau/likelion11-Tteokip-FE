@@ -303,8 +303,13 @@ section {
 }
 .carousel .card h3 {
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 1rem;
     margin: 4px 0 0 5px;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1 ;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .carousel .card .card-title span {
@@ -342,12 +347,19 @@ section {
     color: #fff;
     margin-right: 6%;
     margin-top: 2%;
-    padding: 1.5% 4%;
-    height: 40%;
+    padding: 3px 6px;
+    height: 18px;
+    width: 30px;
     border-radius: 18px;
     font-weight: 700;
-    font-size: 1rem;
+    font-size: 0.8rem;
 
+}
+
+.d-day p {
+    display: flex;
+    margin: 0;
+    padding: 0;
 }
 
 /*찜 버튼*/

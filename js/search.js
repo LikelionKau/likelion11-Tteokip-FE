@@ -49,9 +49,14 @@ const fillSearch = (suggestArr) => {
         li.innerHTML = el;
         ul.appendChild(li);
         li.addEventListener("click", function (event){
-            //searchInput.value = event.target.innerText;
-            let searchTerm = event.target.innerText;
-            window.location.href = 'detail.html?search=' + encodeURIComponent(searchTerm);
+            checkTokenValidity();
+            if(localStorage.getItem('login-token')){
+                let searchTerm = event.target.innerText;
+                window.location.href = 'detail.html?search=' + encodeURIComponent(searchTerm);
+            }else{
+                window.location.href = '../html/login.html'
+            }
+
         })
     })
 }
@@ -64,8 +69,14 @@ const cards = document.querySelectorAll('.card');
 
 cards.forEach(function(card) {
     card.addEventListener("click", function (event) {
-        let title = card.querySelector('.card-title h3').textContent;
-        window.location.href = 'detail.html?search=' + encodeURIComponent(title);
+        checkTokenValidity();
+        if(localStorage.getItem('login-token')){
+            let title = card.querySelector('.card-title h3').textContent;
+            window.location.href = 'detail.html?search=' + encodeURIComponent(title);
+        }else{
+            window.location.href = '../html/login.html'
+        }
+
     });
 });
 
